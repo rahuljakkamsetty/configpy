@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-__version__ = '0.1'
+__version__ = '0.0.1'
 
 here = path.abspath(path.dirname(__file__))
 OFFICIAL_URL = "https://github.com/rahuljakkamsetty/configpy"
@@ -24,12 +24,12 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 # dependency_links = [x.strip().replace('git+', '') for x in all_reqs if x.startswith('git+')]
 
 setup(
-    name='leanai',
+    name='configpy',
     version=__version__,
     description='Configuration of Deep Learning Models is made easy with the data structures in this library.',
     long_description=long_description,
     url=OFFICIAL_URL,
-    download_url=OFFICIAL_URL + '/tarball/' + __version__,
+    #download_url=OFFICIAL_URL + '/tarball/' + __version__,
     license=None,
     long_description_content_type="text/markdown",
     classifiers=[
@@ -38,12 +38,12 @@ setup(
         'Programming Language :: Python',
     ],
     keywords='',
-    packages=find_packages(exclude=['examples', 'docs', 'tests*']),
+    #packages=find_packages(exclude=['examples', 'docs', 'tests*']),
     include_package_data=True,
     author='Rahul Jakkamsetty',
     # install_requires=install_requires,
     # dependency_links=dependency_links,
-    author_email='ra.de',
+    author_email='rahul.jakkamsetty@icloud.com',
     extras_require={
    },
 )
