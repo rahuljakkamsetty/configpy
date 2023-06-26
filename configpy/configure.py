@@ -16,12 +16,12 @@ def subtract(a, b):
 Now you can write a configuration which performs multiplication, subtraction and then addition in the following way
 
 ```python
-myconfig = Configure(objekt = add,
+myconfig = Configure(obj = add,
                     self_build = True, 
                     a = 10, 
-                    b = Configure(objekt = subtract,
+                    b = Configure(obj = subtract,
                                 self_build = True,
-                                    a = 15, b = Configure(objekt = multiply,
+                                    a = 15, b = Configure(obj = multiply,
                                                          self_build = True,
                                                          a = 2,
                                                          b = 2)))
@@ -29,15 +29,14 @@ myconfig = Configure(objekt = add,
 or 
 
 ```python
-myconfig = ConfigBuild(objekt = add,
+myconfig = ConfigBuild(obj = add,
                     a = 10, 
-                    b = ConfigBuild(objekt = subtract,
-                                    a = 15, b = ConfigBuild(objekt = multiply,
+                    b = ConfigBuild(obj = subtract,
+                                    a = 15, b = ConfigBuild(obj = multiply,
                                                          a = 2,
                                                          b = 2)))
 ```
 and finally call
-
 ```python
 myconfig()
 ```
@@ -46,6 +45,18 @@ myconfig()
 from typing import Any
 from collections.abc import Sequence
 from collections import OrderedDict
+
+
+class Parameters(OrderedDict):
+    def __str__(self) -> str:
+        k = 'key'
+        v = 'argument'
+        head = (f"{k:^18}|{v:^18}")+"\n"
+        div = (f"-"*37)+"\n"
+        lines = ''
+        for k, v in self.items():
+            lines += (f"{k:^18}|{v:^18}")+"\n"
+        return head+div+lines
 
 
 class Configure(dict):
@@ -58,7 +69,7 @@ class Configure(dict):
             self.pop('self_build')
             for key, value in self.items():
                 if isinstance(value, Configure):
-                    if 'objekt' in value:
+                    if 'obj' in value:
                         self[key] = value()
                 if isinstance(value, Sequence) and not isinstance(value, str):
                     elem_type = type(value)
@@ -73,18 +84,18 @@ class Configure(dict):
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
 
-        objekt = self.pop('objekt', None)
-        if objekt:
+        obj = self.pop('obj', None)
+        if obj:
             self.__self_build__()
             arguments = dict(**self)
             arguments.update(kwds)
-            return objekt(*args, **arguments)
+            return obj(*args, **arguments)
         else:
             raise AttributeError(
-                f"No Class or Method is available. For e.g. pass objekt='Your method/class' as an argument")
+                f"No Class or Method is available. For e.g. pass obj='Your method/class' as an argument")
 
     def flatten(self, prev_key=None):
-        outp = OrderedDict()
+        outp = Parameters()
         internal_keys = ['self_build']
         for key, value in self.items():
             key_ = key

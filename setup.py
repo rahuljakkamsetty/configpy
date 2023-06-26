@@ -38,7 +38,7 @@ setup(
         'Programming Language :: Python',
     ],
     keywords='',
-    #packages=find_packages(exclude=['examples', 'docs', 'tests*']),
+    packages=find_packages(exclude=['debug', 'docs', 'tests*']),
     include_package_data=True,
     author='Rahul Jakkamsetty',
     # install_requires=install_requires,
