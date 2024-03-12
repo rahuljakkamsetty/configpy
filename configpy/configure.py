@@ -50,16 +50,17 @@ import json
 from copy import deepcopy
 import inspect
 
+
 Path = NewType('Path', str)
 
 
 def load_json(path: "Path") -> Any:
     """loads a json file.
-    
+
     Parameters:
     -----------
     path: file path of json to be loaded.
-    
+
     """
     with open(path, 'r+') as f:
         data = json.load(f)
@@ -68,7 +69,7 @@ def load_json(path: "Path") -> Any:
 
 def write_json(path: Path, data: Any) -> None:
     """writes data to a json file.
-    
+
     Parameters:
     -----------
     path: file path of json to be saved.
@@ -79,7 +80,6 @@ def write_json(path: Path, data: Any) -> None:
         '.json'), f"invalid path {path}, path should end with '.json'"
     with open(path, 'w+') as f:
         json.dump(data, f, indent=4)
-
 
 
 class Parameters(OrderedDict):
@@ -95,6 +95,8 @@ class Parameters(OrderedDict):
 
 
 class Configure(dict):
+
+    internal_keys = ['self_build']
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -131,7 +133,6 @@ class Configure(dict):
 
     def flatten(self, prev_key=None):
         outp = Parameters()
-        internal_keys = ['self_build']
         for key, value in self.items():
             key_ = key
             if prev_key:
@@ -139,7 +140,7 @@ class Configure(dict):
             if isinstance(value, Configure):
                 outp.update(value.flatten(key))
             else:
-                if key_ not in internal_keys:
+                if key_ not in self.internal_keys:
                     if hasattr(value, '__name__'):
                         outp[key] = value.__name__
                     else:
