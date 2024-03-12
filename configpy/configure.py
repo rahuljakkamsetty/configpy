@@ -45,7 +45,9 @@ myconfig()
 from typing import Any, NewType
 from collections.abc import Sequence
 from collections import OrderedDict
+from typing_extensions import Self
 import json
+from copy import deepcopy
 Path = NewType('Path', str)
 
 
@@ -141,6 +143,12 @@ class Configure(dict):
                     else:
                         outp[key] = value
         return outp
+
+    def clone(self) -> Self:
+        """
+        returns a copy with new address on the memory.
+        """
+        return deepcopy(self)
 
 
 class ConfigBuild(Configure):
