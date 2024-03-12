@@ -48,6 +48,8 @@ from collections import OrderedDict
 from typing_extensions import Self
 import json
 from copy import deepcopy
+import inspect
+
 Path = NewType('Path', str)
 
 
@@ -143,6 +145,19 @@ class Configure(dict):
                     else:
                         outp[key] = value
         return outp
+
+    def serialize(self):
+        for key, value in self.items():
+            if isinstance(value, Configure):
+                value.serialize()
+            if key == 'obj':
+                new_obj = inspect.getmodule(value).__name__
+                self[key] = f"{new_obj}.{value.__name__}"
+
+    def dump(self, path: Path):
+        clone = self.clone()
+        clone.serialize()
+        write_json(path=path, data=clone)
 
     def clone(self) -> Self:
         """
