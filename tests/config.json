@@ -1,0 +1,16 @@
+{
+    "self_build": true,
+    "obj": "dict",
+    "a": 10,
+    "b": {
+        "self_build": true,
+        "obj": "__main__.subtract",
+        "a": 10,
+        "b": {
+            "self_build": true,
+            "obj": "__main__.multiply",
+            "a": 4,
+            "b": 2
+        }
+    }
+}
