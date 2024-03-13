@@ -15,7 +15,12 @@ import sys
 # internal imports
 from configpy.utils import load_json, write_json, Path
 
+
+
 class Parameters(OrderedDict):
+    """
+    An ordered dict of parameters.
+    """
     def __str__(self) -> str:
         k = 'key'
         v = 'argument'
@@ -179,6 +184,15 @@ class Configure(dict):
 
     @staticmethod
     def from_json(path: Path) -> Self:
+        """
+        Creates a configure object from the provided json file
+        
+        Parameters:
+        -----------
+        path: Path to json file.
+
+        """
+
         data = load_json(path)
         Configure.traverse_dict(data)
         config = Configure(**data)
@@ -211,6 +225,11 @@ class Configure(dict):
 
 
 class ConfigBuild(Configure):
+    """
+    Inherits from the original Configure object. 
+    Automatically builds the whole nested ConfigBuild objects in the config file.
+
+    """
     def __init__(self, **kwargs) -> None:
         self['self_build'] = True
         super().__init__(**kwargs)
