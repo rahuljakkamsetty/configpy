@@ -154,6 +154,15 @@ class Configure(dict):
         returns a copy with new address on the memory.
         """
         return deepcopy(self)
+    
+    def __repr__(self) -> str:
+        dict_str = super().__repr__()
+        dict_str = dict_str.replace("{", "(")
+        dict_str = dict_str.replace("}", ")")
+        dict_str = f"Configure{dict_str}"
+
+        return dict_str
+
     @staticmethod
     def traverse_dict(data: dict) -> None:
         for key, value in data.items():
