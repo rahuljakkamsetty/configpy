@@ -154,6 +154,47 @@ class Configure(dict):
         returns a copy with new address on the memory.
         """
         return deepcopy(self)
+    @staticmethod
+    def traverse_dict(data: dict) -> None:
+        for key, value in data.items():
+            if key == 'obj':
+                data[key] = Configure.get_method(value)
+            if isinstance(value, dict):
+                if 'obj' in value:
+                    data[key] = Configure(**value)
+                    Configure.traverse_dict(data[key])
+
+    @staticmethod
+    def from_json(path: Path) -> Self:
+        data = load_json(path)
+        Configure.traverse_dict(data)
+        config = Configure(**data)
+        return config
+
+    @staticmethod
+    def get_method(obj: str) -> Callable:
+        """
+        Given the string form of the method, this method return object of that method.
+        """
+
+        if "." in obj:
+            module_names = obj.split('.')
+            method_name = module_names[-1]
+        else:
+            module_names = ['builtins', obj]
+            method_name = obj
+
+        if module_names[0] == "__main__":
+            module = sys.modules["__main__"]
+        else:
+            module = import_module(module_names[0])
+
+            for sub_module_name in module_names[1:-1]:
+                module = getattr(module, sub_module_name)
+
+        method = getattr(module, method_name)
+
+        return method
 
 
 class ConfigBuild(Configure):
