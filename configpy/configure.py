@@ -1,14 +1,18 @@
 """Contains the Configuration Data structures which can be used to write more readable config."""
 
-
-
-from typing import Any, NewType, Optional
+# python imports
+from typing import Any, Callable, Optional
 from collections.abc import Sequence
 from collections import OrderedDict
 from typing_extensions import Self
-import json
 from copy import deepcopy
 import inspect
+from importlib import import_module
+import sys
+
+# third-party imports
+
+# internal imports
 from configpy.utils import load_json, write_json, Path
 
 class Parameters(OrderedDict):
@@ -30,7 +34,7 @@ class Configure(dict):
     for e.g. say we have following methods.
     ```python
 
-    def mulitply(a, b):
+    def multiply(a, b):
         return a * b 
 
     def add(a,b):
@@ -124,7 +128,7 @@ class Configure(dict):
                         outp[key] = value
         return outp
 
-    def serialize(self):
+    def serialize(self) -> None:
         """
         Serializes the configure object to create JSON serializable configure object.
         """
@@ -136,7 +140,7 @@ class Configure(dict):
                 new_obj = inspect.getmodule(value).__name__
                 self[key] = f"{new_obj}.{value.__name__}"
 
-    def dump(self, path: Path):
+    def dump(self, path: Path) -> None:
         """
         Dumps the configure object to a JSON file.
 
