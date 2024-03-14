@@ -1,11 +1,19 @@
 """Some utility functions."""
 
 # python imports
-from typing import NewType, Any
+from typing import NewType, Any, Sequence
 import json
 
 
 Path = NewType('Path', str)
+
+def is_sequence(x: Any) -> bool:
+    """
+    Checks whether given object is Sequence and not string.
+    """
+    if isinstance(x, Sequence) and not isinstance(x, str):
+        return True
+    return False
 
 
 def load_json(path: "Path") -> Any:
