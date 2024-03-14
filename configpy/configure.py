@@ -13,14 +13,15 @@ import sys
 # third-party imports
 
 # internal imports
-from configpy.utils import load_json, write_json, Path
-
+from configpy.utils import (load_json, write_json,
+                            Path, is_jsonable, is_sequence)
 
 
 class Parameters(OrderedDict):
     """
     An ordered dict of parameters.
     """
+
     def __str__(self) -> str:
         k = 'key'
         v = 'argument'
@@ -90,7 +91,7 @@ class Configure(dict):
                 if isinstance(value, Configure):
                     if 'obj' in value:
                         self[key] = value()
-                if isinstance(value, Sequence) and not isinstance(value, str):
+                if is_sequence(value):
                     elem_type = type(value)
                     self[key] = elem_type(
                         [i() if isinstance(i, Configure) else i for i in value])
@@ -146,11 +147,19 @@ class Configure(dict):
         for key, value in self.items():
             if isinstance(value, Configure):
                 value.serialize()
-            if key == 'obj':
+            if is_sequence(value):
+                for v in value:
+                    if isinstance(v, Configure):
+                        v.serialize()
+            if key == 'obj' or not is_jsonable(value):
                 new_obj = inspect.getmodule(value).__name__
-                self[key] = f"{new_obj}.{value.__name__}"
+                if hasattr(value, '__qualname__'):
+                    name = value.__qualname__
+                else:
+                    name = value.__class__.__qualname__
+                self[key] = f"{new_obj}.{name}"
 
-    def dump(self, path: Path) -> None:
+    def to_json(self, path: Path) -> None:
         """
         Dumps the configure object to a JSON file.
 
@@ -168,7 +177,7 @@ class Configure(dict):
         returns a copy with new address on the memory.
         """
         return deepcopy(self)
-    
+
     def __repr__(self) -> str:
         dict_str = super().__repr__()
         dict_str = dict_str.replace("{", "(")
@@ -179,9 +188,14 @@ class Configure(dict):
 
     @staticmethod
     def traverse_dict(data: dict) -> None:
+
         for key, value in data.items():
             if key == 'obj':
                 data[key] = Configure.get_method(value)
+            if is_sequence(value):
+                for v in value:
+                    if isinstance(v, dict):
+                        Configure.traverse_dict(v)
             if isinstance(value, dict):
                 if 'obj' in value:
                     data[key] = Configure(**value)
@@ -191,7 +205,7 @@ class Configure(dict):
     def from_json(path: Path) -> Self:
         """
         Creates a configure object from the provided json file
-        
+
         Parameters:
         -----------
         path: Path to json file.
@@ -235,6 +249,7 @@ class ConfigBuild(Configure):
     Automatically builds the whole nested ConfigBuild objects in the config file.
 
     """
+
     def __init__(self, **kwargs) -> None:
         self['self_build'] = True
         super().__init__(**kwargs)
