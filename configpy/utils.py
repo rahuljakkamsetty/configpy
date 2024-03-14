@@ -7,6 +7,18 @@ import json
 
 Path = NewType('Path', str)
 
+
+def is_jsonable(x: Any) -> bool:
+    """
+    Checks whether given object is JSON serailizable. 
+    """
+    try:
+        json.dumps(x)
+        return True
+    except TypeError:
+        return False
+
+
 def is_sequence(x: Any) -> bool:
     """
     Checks whether given object is Sequence and not string.
