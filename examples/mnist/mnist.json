@@ -1,0 +1,65 @@
+{
+    "self_build": true,
+    "obj": "__main__.LitExperiment",
+    "trainer": {
+        "self_build": true,
+        "obj": "lightning.pytorch.trainer.trainer.Trainer",
+        "limit_train_batches": 100,
+        "max_epochs": 1
+    },
+    "dataloader": {
+        "self_build": true,
+        "obj": "torch.utils.data.dataloader.DataLoader",
+        "dataset": {
+            "self_build": true,
+            "obj": "torchvision.datasets.mnist.MNIST",
+            "root": "/home/jakkamsetty/code/configpy/examples",
+            "download": true,
+            "transform": "torchvision.transforms.transforms.ToTensor"
+        }
+    },
+    "encoder": {
+        "self_build": true,
+        "obj": "torch.nn.modules.container.Sequential",
+        "__args__": [
+            {
+                "self_build": true,
+                "obj": "torch.nn.modules.linear.Linear",
+                "in_features": 784,
+                "out_features": 64
+            },
+            {
+                "self_build": true,
+                "obj": "torch.nn.modules.activation.ReLU"
+            },
+            {
+                "self_build": true,
+                "obj": "torch.nn.modules.linear.Linear",
+                "in_features": 64,
+                "out_features": 3
+            }
+        ]
+    },
+    "decoder": {
+        "self_build": true,
+        "obj": "torch.nn.modules.container.Sequential",
+        "__args__": [
+            {
+                "self_build": true,
+                "obj": "torch.nn.modules.linear.Linear",
+                "in_features": 3,
+                "out_features": 64
+            },
+            {
+                "self_build": true,
+                "obj": "torch.nn.modules.activation.ReLU"
+            },
+            {
+                "self_build": true,
+                "obj": "torch.nn.modules.linear.Linear",
+                "in_features": 64,
+                "out_features": 784
+            }
+        ]
+    }
+}
