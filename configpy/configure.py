@@ -236,7 +236,12 @@ class Configure(dict):
             module = import_module(module_names[0])
 
             for sub_module_name in module_names[1:-1]:
-                module = getattr(module, sub_module_name)
+                try:
+                    module = getattr(module, sub_module_name)
+                #torch deletes the intermediate attributes. e.g. torch.optim.adamw.AdamW is torch.optim.AdamW
+                #https://github.com/pytorch/pytorch/blob/956059fa2e4a7faf77480c562a103ce717f14b7f/torch/optim/__init__.py#L29
+                except AttributeError:
+                    print(f"WARNING: {module.__name__} doesn't have {sub_module_name}. Skipping it and trying to import next method/module")
 
         method = getattr(module, method_name)
 
