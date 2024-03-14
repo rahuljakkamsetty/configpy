@@ -242,6 +242,21 @@ class Configure(dict):
 
         return method
 
+    @staticmethod
+    def build_from(obj: Self, *args, **kwargs) -> Self:
+        """
+        Builds the Configure object with ability to add more arguments.
+        
+        Parameters:
+        -----------
+        obj: Configure object to built.
+            
+        """
+
+        if isinstance(obj, Configure):
+            obj = obj.clone()
+            obj =  obj(*args, **kwargs)
+        return obj
 
 class ConfigBuild(Configure):
     """
