@@ -193,13 +193,18 @@ class Configure(dict):
             if key == 'obj':
                 data[key] = Configure.get_method(value)
             if is_sequence(value):
+                value = [v for v in value] # making mutable
+                data[key] = value
                 for v in value:
                     if isinstance(v, dict):
-                        Configure.traverse_dict(v)
+                        v_idx = value.index(v)
+                        if 'obj' in v:
+                            value[v_idx] = Configure(**v)
+                        Configure.traverse_dict(value[v_idx])
             if isinstance(value, dict):
                 if 'obj' in value:
                     data[key] = Configure(**value)
-                    Configure.traverse_dict(data[key])
+                Configure.traverse_dict(data[key])
 
     @staticmethod
     def from_json(path: Path) -> Self:
