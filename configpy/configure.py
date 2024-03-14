@@ -2,7 +2,6 @@
 
 # python imports
 from typing import Any, Callable, Optional
-from collections.abc import Sequence
 from collections import OrderedDict
 from typing_extensions import Self
 from copy import deepcopy
@@ -84,7 +83,7 @@ class Configure(dict):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
-    def __self_build__(self):
+    def __self_build__(self) -> None:
         if self.get('self_build', None):
             self.pop('self_build')
             for key, value in self.items():
@@ -119,7 +118,7 @@ class Configure(dict):
             raise AttributeError(
                 f"No Class or Method is available. For e.g. pass obj='Your method/class' as an argument")
 
-    def flatten(self, prev_key: Optional[str] = None):
+    def flatten(self, prev_key: Optional[str] = None) -> Parameters:
         """
         Flattens the nested configure object and retruns as ordered dict.
         """
@@ -249,7 +248,6 @@ class Configure(dict):
                     print(f"WARNING: {module.__name__} doesn't have {sub_module_name}. Skipping it and trying to import next method/module")
 
         method = getattr(module, method_name)
-
         return method
 
     @staticmethod
@@ -260,7 +258,7 @@ class Configure(dict):
         Parameters:
         -----------
         obj: Configure object to built.
-            
+
         """
 
         if isinstance(obj, Configure):
