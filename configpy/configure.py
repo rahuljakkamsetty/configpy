@@ -106,6 +106,11 @@ class Configure(dict):
         obj = self.pop('obj', None)
         if obj:
             self.__self_build__()
+            just_args = self.pop('__args__', None)
+            if just_args:
+                just_args = [i for i in just_args]
+                args = [i for i in args]
+                args.extend(just_args)
             arguments = dict(**self)
             arguments.update(kwds)
             return obj(*args, **arguments)
