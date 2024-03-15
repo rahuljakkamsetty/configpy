@@ -79,3 +79,25 @@ In the above example, myconfig() call would call all the nested operations and r
    2. self_build
    3. \_\_args\_\_
 
+**obj**: When defining a "Configure" object, the "obj" key  is provided with Class instance as value. All the other kwargs of that class are provided as kwargs to the "Configure" object. 
+
+**self_build**: This key is especially useful incase of nested configure objects. When this key is passed,  the nested configure objects automatically calls the \_\_call\_\_ method without explicitly it. The "ConfigBuild" object is inherited from Configure with self_build variable already set to True. That's the major difference between Configure and ConfigBuild. 
+
+**\_\_args\_\_**: Some functions doesn't have kwargs defined instead accept args. For e.g. torch.nn.Sequential. In that scenario, the args can be passed to configure object using \_\_args\_\_ key. This can be observed in the example above. 
+
+More examples can be found in [here](./examples/).
+
+## Export/Import
+**JSON Interchange**: The configuration built using the Configure object can be easily exported to a json as show below. 
+
+```
+my_config = Configure("Some object and kwargs")
+
+my_config.to_json("mnist.json")
+```
+
+Similary, a json file can be used to build Configure object as shown below. The json file should follow the format show in the [example](./examples/mnist/mnist.json).
+
+```
+config = Configure.from_json("mnist.json")
+```
